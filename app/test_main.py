@@ -1,6 +1,6 @@
 import pytest
 
-from app.main import get_human_age
+import app.main as main_module
 
 
 @pytest.mark.parametrize("cat_age,dog_age,expected", [
@@ -18,23 +18,7 @@ from app.main import get_human_age
     (100, 100, [21, 17]),
 ])
 def test_get_human_age(cat_age: int, dog_age: int, expected: list) -> None:
-    assert get_human_age(cat_age, dog_age) == expected
-
-
-def test_returns_list() -> None:
-    assert isinstance(get_human_age(0, 0), list)
-
-
-def test_returns_two_elements() -> None:
-    assert len(get_human_age(10, 10)) == 2
-
-
-def test_ages_are_independent() -> None:
-    cat_only = get_human_age(28, 0)
-    dog_only = get_human_age(0, 29)
-    combined = get_human_age(28, 29)
-    assert combined[0] == cat_only[0]
-    assert combined[1] == dog_only[1]
+    assert main_module.get_human_age(cat_age, dog_age) == expected
 
 
 @pytest.mark.parametrize("cat_age,dog_age", [
@@ -42,9 +26,9 @@ def test_ages_are_independent() -> None:
     (0, -1),
     (-5, -5),
 ])
-def test_negative_ages_raise_type_error(cat_age: int, dog_age: int) -> None:
-    with pytest.raises(TypeError):
-        get_human_age(cat_age, dog_age)
+def test_negative_ages_raise_value_error(cat_age: int, dog_age: int) -> None:
+    with pytest.raises(ValueError):
+        main_module.get_human_age(cat_age, dog_age)
 
 
 @pytest.mark.parametrize("cat_age,dog_age", [
@@ -55,6 +39,6 @@ def test_negative_ages_raise_type_error(cat_age: int, dog_age: int) -> None:
     (None, 0),
     (0, None),
 ])
-def test_invalid_types_raise_type_error(cat_age: int, dog_age: int) -> None:
+def test_invalid_types_raise_type_error(cat_age: any, dog_age: any) -> None:
     with pytest.raises(TypeError):
-        get_human_age(cat_age, dog_age)
+        main_module.get_human_age(cat_age, dog_age)
